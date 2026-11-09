@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "agent": "codex",
+  "validations": {
+    "maven-verify": [
+      "./mvnw",
+      "verify"
+    ]
+  },
+  "validationTimeoutSeconds": 120,
+  "maxRepairs": 2
+}

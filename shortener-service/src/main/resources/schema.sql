@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS short_links (
+    code VARCHAR(8) PRIMARY KEY,
+    destination VARCHAR(2048) NOT NULL,
+    redirect_count BIGINT NOT NULL DEFAULT 0 CHECK (redirect_count >= 0),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

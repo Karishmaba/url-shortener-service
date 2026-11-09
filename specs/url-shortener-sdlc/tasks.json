@@ -1,0 +1,178 @@
+{
+  "tasks": [
+    {
+      "id": "build-setup",
+      "kind": "agent",
+      "prerequisites": [],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "pom.xml",
+        "mvnw",
+        "mvnw.cmd",
+        ".mvn/wrapper/**",
+        ".gitignore",
+        "shortener-service/pom.xml",
+        "shortener-service/src/main/java/com/example/shortener/ShortenerApplication.java"
+      ],
+      "description": "Create the root Maven reactor and shortener-service Spring Boot module, Java 21 bootstrap, pinned dependencies/plugins and checksum-pinned executable Maven wrapper. Include web, JDBC, H2, test starter; configure Surefire *Test and Failsafe *IT through verify with no test skipping. Ignore build outputs and development database files. Record selected versions and launch commands in task evidence; do not create business code/tests/docs."
+    },
+    {
+      "id": "domain-contract",
+      "kind": "agent",
+      "prerequisites": [
+        "build-setup"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "shortener-service/src/main/java/com/example/shortener/domain/**"
+      ],
+      "description": "Implement the exact shared domain records, exceptions, UrlValidator and injectable CodeGenerator/SecureRandomCodeGenerator contract in plan.md. Preserve accepted URLs unchanged; enforce all specified validation and code rules. No persistence, service or controller implementation."
+    },
+    {
+      "id": "persistence",
+      "kind": "agent",
+      "prerequisites": [
+        "domain-contract"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "shortener-service/src/main/java/com/example/shortener/persistence/**",
+        "shortener-service/src/main/resources/schema.sql"
+      ],
+      "description": "Implement LinkRepository and JDBC adapter per plan contract, exact idempotent schema, parameterized SQL, fresh autocommit inserts, collision-specific mapping, atomic increment/read transaction, case-sensitive lookups and real connectivity checks. Never reset data."
+    },
+    {
+      "id": "service",
+      "kind": "agent",
+      "prerequisites": [
+        "persistence"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "shortener-service/src/main/java/com/example/shortener/service/**"
+      ],
+      "description": "Implement LinkService per shared contract: validate destinations/codes, ten collision attempts, duplicate destinations create separate links, GET increments once after commit, HEAD resolves without increment, stats/health do not mutate. Propagate unexpected failures rather than treating them as collisions."
+    },
+    {
+      "id": "http-api",
+      "kind": "agent",
+      "prerequisites": [
+        "service"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "shortener-service/src/main/java/com/example/shortener/web/**",
+        "shortener-service/src/main/java/com/example/shortener/config/**",
+        "shortener-service/src/main/resources/application.properties"
+      ],
+      "description": "Implement exact HTTP/JSON/error/header contracts, explicit HEAD route, strict object/trailing JSON handling, configured public origin, file H2 defaults and idempotent startup configuration. Match plan interfaces; no destination fetches, no caches or startup resets."
+    },
+    {
+      "id": "unit-tests",
+      "kind": "agent",
+      "prerequisites": [
+        "build-setup",
+        "domain-contract"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "shortener-service/src/test/java/com/example/shortener/unit/**"
+      ],
+      "description": "Author *Test unit tests against shared domain/service contracts using controlled collaborators. Cover validation boundaries/preservation, generation, retries/exhaustion, unknown codes, noncollision errors and nonmutating operations. No production or build edits; service may not yet exist until combined verification."
+    },
+    {
+      "id": "integration-tests",
+      "kind": "agent",
+      "prerequisites": [
+        "build-setup",
+        "http-api"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "shortener-service/src/test/java/com/example/shortener/integration/**",
+        "shortener-service/src/test/resources/**"
+      ],
+      "description": "Author MockMvc *IT HTTP/error/header/HEAD/stats/health tests and real H2 collision/concurrency tests. Add separate file-H2 restart IT closing/reopening two contexts. Assert exact destinations, counts, case sensitivity, existing-row preservation and ten-collision exhaustion. Isolate databases, bound concurrency, contact no destinations. No production/build edits."
+    },
+    {
+      "id": "documentation",
+      "kind": "agent",
+      "prerequisites": [
+        "build-setup",
+        "http-api"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [
+        "README.md",
+        "docs/**"
+      ],
+      "description": "Document setup/JDK/pinned build, root ./mvnw verify and run commands, persistent DB paths and configuration, public origin, complete API/errors/examples and exact schema. Include HEAD/count semantics, concurrency/restarts and exclusions. Keep instructions consistent with actual build and application."
+    },
+    {
+      "id": "verify",
+      "kind": "validation",
+      "prerequisites": [
+        "build-setup",
+        "domain-contract",
+        "persistence",
+        "service",
+        "http-api",
+        "unit-tests",
+        "integration-tests",
+        "documentation"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [],
+      "description": "Run owner-configured maven-verify from root on combined deliverables. Record actual exit code and Surefire/Failsafe reports; confirm unit and integration tests ran, including restart and concurrency. Do not edit files or weaken gates.",
+      "validation": "maven-verify"
+    },
+    {
+      "id": "final-review",
+      "kind": "review",
+      "prerequisites": [
+        "build-setup",
+        "domain-contract",
+        "persistence",
+        "service",
+        "http-api",
+        "unit-tests",
+        "integration-tests",
+        "documentation",
+        "verify"
+      ],
+      "consumes": [
+        "spec",
+        "plan"
+      ],
+      "scope": [],
+      "description": "Read-only final review of combined candidate and actual verification evidence against every acceptance criterion, file scopes, persistence safety, documentation and wrapper/build reproducibility. Record findings and candidate risk; only user may approve. Do not integrate or execute further tasks automatically."
+    }
+  ]
+}

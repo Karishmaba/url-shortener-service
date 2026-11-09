@@ -1,0 +1,69 @@
+{
+  "recordedOn": "2026-11-08",
+  "command": "./mvnw --batch-mode --no-transfer-progress verify",
+  "exitCode": 0,
+  "suites": {
+    "unit": [
+      {
+        "name": "com.example.shortener.unit.LinkServiceTest",
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.example.shortener.unit.SecureRandomCodeGeneratorTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.example.shortener.unit.UrlValidatorTest",
+        "tests": 54,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "integration": [
+      {
+        "name": "com.example.shortener.integration.CollisionAndTransactionIT",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.example.shortener.integration.ConcurrencyIT",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.example.shortener.integration.HttpContractIT",
+        "tests": 45,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.example.shortener.integration.RestartPersistenceIT",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "liveHttp": {
+    "health": 200,
+    "creation": 201,
+    "redirect": 302,
+    "destination": "https://example.com",
+    "redirectCount": 1,
+    "database": "isolated temporary file",
+    "destinationFetched": false
+  }
+}

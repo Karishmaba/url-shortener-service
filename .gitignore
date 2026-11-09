@@ -1,0 +1,30 @@
+# Maven build output
+**/target/
+
+# Local H2 data, including files created from a module working directory
+**/data/
+*.mv.db
+*.trace.db
+*.lock.db
+*.temp.db
+
+# Local IDE and OS files
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.DS_Store
+
+# Agent Kit runtime state and private snapshots
+.agentkit/state.sqlite3*
+.agentkit/work/
+.agentkit/runs/
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example
+.aws/
+.codex/
+*.pem
+*.key
